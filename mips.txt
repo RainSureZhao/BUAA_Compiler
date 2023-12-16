@@ -1,0 +1,52 @@
+.data
+.text
+addiu $sp, $sp, -4
+# CALL main
+sw $ra, 0($sp)
+jal main
+lw $ra, 0($sp)
+# EXIT
+li $v0, 10
+syscall
+# main:
+main:
+addiu $sp, $sp, -24
+# LOCAL VAR $i@1 1
+li $t0, 1
+# NOP
+sw $t0, 20($sp)
+Label1:
+# TEMP $0 <- $i@1
+lw $t1, 20($sp)
+addiu $t0, $t1, 0
+# $1 <- $0 LT 10
+li $fp, 10
+slt $t2, $t0, $fp
+# BRANCH Label2: IF $1 EQ 0
+sw $t1, 20($sp)
+sw $t0, 16($sp)
+sw $t2, 12($sp)
+lw $t0, 12($sp)
+beq $t0, $0, Label2
+# JUMP Label1
+sw $t0, 12($sp)
+j Label1
+# TEMP $2 <- $i@1
+lw $t1, 20($sp)
+addiu $t0, $t1, 0
+# $3 <- $2 ADD 1
+li $fp, 1
+addu $t2, $t0, $fp
+# SAVE $i@1 <- $3
+addiu $t1, $t2, 0
+# JUMP Label1
+sw $t1, 20($sp)
+sw $t0, 8($sp)
+sw $t2, 4($sp)
+j Label1
+# NOP
+Label2:
+# RETURN 0
+li $v0, 0
+addiu $sp, $sp, 24
+jr $ra
